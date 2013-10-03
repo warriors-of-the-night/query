@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Query
 
 TODO: Write a gem description
@@ -27,3 +28,7 @@ TODO: Write usage instructions here
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+=======
+query
+=====
+>>>>>>> a0eb3f9efd5df6f93da36dfc4168da6d617686f8
