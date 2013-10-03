@@ -1,34 +1,24 @@
-<<<<<<< HEAD
-# Query
+ruby-baidu
+==========
 
-TODO: Write a gem description
 
-## Installation
+#to get the result list by querying "abc"
+Query::Engine::Baidu.new.query("abc").ranks().each do |id,value|
+    puts id,value
+end
 
-Add this line to your application's Gemfile:
+#to get the result list with host "www.abc.com.cn" by querying "abc"
+Query::Engine::Baidu.new.query("abc").ranks("www.abc.com.cn").each do |id,value|
+    puts id,value
+end
 
-    gem 'query'
+#to get the result list with host which fit the regex /com.cn/ by querying "abc"
+Query::Engine::Baidu.new.query("abc").ranks(/com.cn/).each do |id,value|
+    puts id,value
+end
 
-And then execute:
+# to get the top rank of host "www.abc.com.cn" by querying "abc"
+Query::Engine::Baidu.new.query("abc").rank("www.abc.com.cn")
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install query
-
-## Usage
-
-TODO: Write usage instructions here
-
-## Contributing
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
-=======
-query
-=====
->>>>>>> a0eb3f9efd5df6f93da36dfc4168da6d617686f8
+TODO:
+查询结果不多,翻页不存在时的处理,及rspec
