@@ -1,4 +1,4 @@
-ruby-baidu
+Query
 ==========
 
 
