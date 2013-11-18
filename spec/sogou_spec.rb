@@ -13,12 +13,11 @@ describe "types check" do
         ads_right.class.should == Array
     end	
     it "should has keys" do
-        p ads_top[0]
-        ads_top[0].should have_key(:rank,:domain)
-        ads_top[0].has_key?(:domain).should == true
-        ads_top[0].has_key?(:host).should == true
-        ads_top[0].has_key?(:href).should == true
-        ads_top[0].has_key?(:href).should == true
+        ads_top[0].should have_key(:rank)
+        ads_top[0].should have_key(:domain)
+        ads_top[0].should have_key(:host)
+        ads_top[0].should have_key(:href)
+        ads_top[0].should have_key(:href)
     end
 end
 describe "contents check" do
