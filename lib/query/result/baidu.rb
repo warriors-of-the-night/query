@@ -1,6 +1,7 @@
 module Query
     module Result
-        class Baidu < Base
+        class Baidu
+            include Query::Result
             def seo_ranks
                 return @ranks unless @ranks.nil?
                 @ranks = Hash.new

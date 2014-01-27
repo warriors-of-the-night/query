@@ -9,7 +9,6 @@ module Query
   end
 end
 require 'httparty'
-require 'query/engine/base'
 require 'query/engine/baidu'
 require 'query/engine/baidu_mobile'
 require 'query/engine/qihu'

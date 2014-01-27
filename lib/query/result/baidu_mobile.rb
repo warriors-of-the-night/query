@@ -1,6 +1,7 @@
 module Query
     module Result
-        class BaiduMobile < Base
+        class BaiduMobile
+            include Query::Result
             #返回当前页所有查询结果
             def ranks
                 #如果已经赋值说明解析过,不需要重新解析,直接返回结果

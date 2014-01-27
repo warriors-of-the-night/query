@@ -45,7 +45,6 @@ module Query
 end
 require 'nokogiri'
 require "addressable/uri"
-require 'query/result/base'
 require 'query/result/baidu'
 require 'query/result/baidu_mobile'
 require 'query/result/qihu'
