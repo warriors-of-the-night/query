@@ -41,7 +41,7 @@ module Query
                 return HTTParty.get("http://index.baidu.com/main/word.php?word=#{URI.encode(wd.encode("GBK"))}").include?"boxFlash"
             end
 
-            def query(wd)
+            def self.query(wd)
                 q = Array.new
                 q << "wd=#{wd}"
                 q << "rn=#{@perpage.to_i}" if @perpage

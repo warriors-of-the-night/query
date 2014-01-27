@@ -31,11 +31,14 @@ module Query
             end
 
             def ads_bottom
+
                 return {} if @page.search("//table[@bgcolor='f5f5f5']").empty?
                 return ads_top
-                # p @page.search("//table[@bgcolor='f5f5f5']").empty?
             end
             def ads_top
+                @page.search("//table[@class='result']/preceding-sibling::div[@class != 'result-op c-container']").map.with_index do |div|
+                    parse_ad(div)
+                end
                 #灰色底推广,上下都有
                 ads = Hash.new
                 @page.search("//table[@bgcolor='#f5f5f5']").each do |table|

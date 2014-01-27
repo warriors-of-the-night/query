@@ -4,19 +4,8 @@ module Query
 		class SogouMobile
 			include Query::Result
 			def ads_top
-				# puts '-'*40
-				# puts @page.search("//ul[@class='searchresult']/child::div[preceding::li]")
-				# puts '-'*40
-				# @page.search("//ul[@class='searchresult']/following-sibling::div[preceding::li]").map.with_index do |ad_div,index|
-				abort 'href'
-				@page.search("//ul[@class='searchresult']/child::div").map.with_index do |ad_div,index|
-					begin
-						parse_ad(ad_div).merge({:rank => index + 1})
-					rescue Exception => e
-		      	puts '-'*40
-						puts e.to_s
-		      	puts ad_div
-					end
+				@page.search("//ul[@class='searchresult']/li[1]/preceding-sibling::div").map.with_index do |ad_div,index|
+					parse_ad(ad_div).merge({:rank => index + 1})
 				end
 			end
 
@@ -25,7 +14,7 @@ module Query
 			end
 
 			def ads_bottom
-				@page.search("//p[@class='websummary]//following-sibling::div").map.with_index do |div,index|
+				@page.search("//ul[@class='searchresult']/li[last()]/following-sibling::div").map.with_index do |div,index|
 					parse_ad(div).merge({:rank => index + 1})
 				end
 			end
