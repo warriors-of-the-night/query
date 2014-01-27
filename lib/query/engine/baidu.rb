@@ -1,7 +1,11 @@
 module Query
     module Engine
-        class Baidu < Base
+        class Baidu
+            include Query::Engine
             BaseUri = 'http://www.baidu.com/s?'
+            Options = {
+                :headers => {"User-Agent" => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.73.11 (KHTML, like Gecko) Version/7.0.1 Safari/537.73.11'}
+            }
             def self.suggestions(wd)
                 require 'json'
                 json = HTTParty.get("http://suggestion.baidu.com/su?wd=#{URI.encode(wd)}&cb=callback").force_encoding('GBK').encode("UTF-8")
@@ -44,18 +48,18 @@ module Query
                 queryStr = q.join("&")
                 #uri = URI.encode((BaseUri + queryStr).encode('GBK'))
                 uri = URI.encode((BaseUri + queryStr))
-                begin
+                # begin
                     # @page = @a.get uri
-                    @page = HTTParty.get uri
+                    @page = HTTParty.get(uri,Options)
                     r = Query::Result::Baidu.new(@page)
                     r.baseuri = uri
                     r.pagenumber = 1
                     r.perpage = @perpage
                     r
-                rescue Exception => e
-                    warn e.to_s
-                    return false
-                end
+                # rescue Exception => e
+                #     warn e.to_s
+                #     return false
+                # end
 =begin
                 query = "#{query}"
                 @uri = BaseUri+URI.encode(query.encode('GBK'))

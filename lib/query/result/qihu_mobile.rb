@@ -1,6 +1,6 @@
 module Query
     module Result
-        class QihooMobile
+        class QihuMobile
         end
     end
 end

@@ -1,7 +1,7 @@
 module Query
     module Result
         class Baidu < Base
-            def ranks
+            def seo_ranks
                 return @ranks unless @ranks.nil?
                 @ranks = Hash.new
                 @page.search("//table[@class=\"result\"]|//table[@class=\"result-op\"]").each do |table|
@@ -54,11 +54,7 @@ module Query
                 end
                 ads
             end
-            def parse_ad(table)
-                href = table.search("font[@color='#008000']").text.split(/\s/).first.strip
-                title = table.search("a").first.text.strip
-                {'title'=>title,'href' => href,'host'=>href}
-            end
+
             def ads_right
                 ads = {}
                 @page.search("//div[@id='ec_im_container']").each do |table|
@@ -97,24 +93,30 @@ module Query
                 @related_keywords ||= @page.search("//div[@id=\"rs\"]//tr//a").map{|keyword| keyword.text}
             end
 
-            def next
-                url = @page.xpath('//a[text()="下一页>"]').first
-                return if url.nil?
-                url = url['href']
-                url = URI.join(@baseuri,url).to_s
-                page = HTTParty.get(url)
-                r = Query::Result::Baidu.new(page)
-                r.baseuri = url
-                r.pagenumber=@pagenumber+1
-                r.perpage=@perpage
-                r
+            # def next
+            #     url = @page.xpath('//a[text()="下一页>"]').first
+            #     return if url.nil?
+            #     url = url['href']
+            #     url = URI.join(@baseuri,url).to_s
+            #     page = HTTParty.get(url)
+            #     r = Query::Result::Baidu.new(page)
+            #     r.baseuri = url
+            #     r.pagenumber=@pagenumber+1
+            #     r.perpage=@perpage
+            #     r
 
-                # @page = BaiduResult.new(Mechanize.new.click(@page.link_with(:text=>/下一页/))) unless @page.link_with(:text=>/下一页/).nil?
-            end
+            #     # @page = BaiduResult.new(Mechanize.new.click(@page.link_with(:text=>/下一页/))) unless @page.link_with(:text=>/下一页/).nil?
+            # end
             def has_result?
                 submit = @page.search('//a[text()="提交网址"]').first
                 return false if submit and submit['href'].include?'sitesubmit'
                 return true
+            end
+            private
+            def parse_ad(table)
+                href = table.search("font[@color='#008000']").text.split(/\s/).first.strip
+                title = table.search("a").first.text.strip
+                {'title'=>title,'href' => href,'host'=>href}
             end
         end
     end

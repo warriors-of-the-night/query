@@ -26,3 +26,4 @@ Query::Engine::Baidu.new.query("abc").rank("www.abc.com.cn")
 
 TODO:
 查询结果不多,翻页不存在时的处理,及rspec
+增加其他搜索引擎
