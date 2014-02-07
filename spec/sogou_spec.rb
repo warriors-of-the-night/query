@@ -97,7 +97,6 @@ describe Query::Engine::Sogou do
         end
 
         it 'gives all suggestions with the query word at the start' do
-            p subject
             subject.each do |suggestion|
                 suggestion.should start_with query
                 # (suggestion.start_with?query).should_be true

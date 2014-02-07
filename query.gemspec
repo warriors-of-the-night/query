@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Query::VERSION
   spec.authors       = ["seoaqua"]
   spec.email         = ["seoaqua@me.com"]
-  spec.description   = %q{This GEM is designed to work for SEOers who need to fetch query and parse results from all kinds of search engines}
-  spec.summary       = %q{Now its only support Chinese main search engines}
+  spec.description   = %q{This GEM is designed to work for Chinese SEOers who need to fetch query and parse results from all kinds of search engines}
+  spec.summary       = %q{I dont have time to write the document yet. Usage is almost within rspec tests. Any questions,pls contact me with QQ628552}
   spec.homepage      = "https://github.com/seoaqua/query"
   spec.license       = "MIT"
 
@@ -23,5 +23,4 @@ Gem::Specification.new do |spec|
   spec.add_dependency "nokogiri"
   spec.add_dependency "addressable"
   spec.add_dependency "httparty"
-  spec.add_dependency "awesome_print"
 end

@@ -4,90 +4,36 @@ module Query
             include Query::Result
             def seo_ranks
                 return @ranks unless @ranks.nil?
-                @ranks = Hash.new
-                @page.search("//table[@class=\"result\"]|//table[@class=\"result-op\"]").each do |table|
-                    id = table['id']
-                    # if @perpage == 10
-                    #     id = table['id'][-1,1]
-                    #     id = '10' if id == '0'
-                    # end
-
-                    @ranks[id] = Hash.new
-                    url = table.search("[@class=\"g\"]").first
-                    url = url.text unless url.nil?
-                    a = table.search("h3").first
-                    next if a.nil?
-                    @ranks[id]['text'] = a.text
-                    @ranks[id]['href'] = url #a.first['href'].sub('http://www.baidu.com/link?url=','').strip
-                    unless url.nil?
-                        url = url.strip
-                        @ranks[id]['host'] = Addressable::URI.parse(URI.encode("http://#{url}")).host
-                    else
-                        @ranks[id]['host'] = nil
-                    end
+                @page.search("//*[@class='result']|//*[@class='result-op']|//*[@class='result-op c-container']").map.with_index do |table,index|
+                    parse_seo(table).merge({:rank => index + 1})
                 end
-                #@page.search("//table[@class=\"result\"]").map{|table|@page.search("//table[@id=\"#{table['id']}\"]//span[@class=\"g\"]").first}.map{|rank|URI(URI.encode('http://'+rank.text.strip)).host unless rank.nil?}
-                @ranks
+            end
+
+            def ads_top
+                @page.search("//*[@class='result']/preceding-sibling::*[contains(@class,'EC_result')]").map.with_index do |div, index|
+                    parse_ad(div).merge(:rank => index + 1)
+                end
             end
 
             def ads_bottom
-
-                return {} if @page.search("//table[@bgcolor='f5f5f5']").empty?
-                return ads_top
-            end
-            def ads_top
-                @page.search("//table[@class='result']/preceding-sibling::div[@class != 'result-op c-container']").map.with_index do |div|
-                    parse_ad(div)
+                @page.search("//*[@class='result']/following-sibling::*[contains(@class,'EC_result')]").map.with_index do |div,index|
+                    parse_ad(div).merge(:rank => index + 1)
                 end
-                #灰色底推广,上下都有
-                ads = Hash.new
-                @page.search("//table[@bgcolor='#f5f5f5']").each do |table|
-                    id = table['id']
-                    next if id.nil?
-                    id = id[2,3].to_i.to_s
-                    ads[id]= parse_ad(table)
-                end
-                #白色底推广,只有上部分
-                if ads.empty?
-                    @page.search("//table").each do |table|
-                        id = table['id']
-                        next if id.nil? or id.to_i<3000
-                        id = id[2,3].to_i.to_s
-                        ads[id]= parse_ad(table)
-                    end
-                end
-                ads
             end
 
             def ads_right
-                ads = {}
-                @page.search("//div[@id='ec_im_container']").each do |table|
-                    table.search("div[@id]").each do |div|
-                        id = div['id'][-1,1].to_i+1
-                        title = div.search("a").first
-                        next if title.nil?
-                        title = title.text
-                        url = div.search("font[@color='#008000']").first
-                        next if url.nil?
-                        url = url.text
-                        ads[id.to_s] = {'title'=>title,'href'=>url,'host'=>url}
-                    end
+                @page.search("//div[@id='ec_im_container']/div[@id]").map.with_index do |div,index|
+                    a = div.search('a').first
+                    url = div.search("*[@class='EC_url']").first.text
+                    url = "http://#{url}"
+                    {
+                        :rank => index + 1,
+                        :text => a.text.strip,
+                        :href => a['href'].strip,
+                        :host => Addressable::URI.parse(URI.encode(url)).host
+                    }
                 end
-                ads
             end
-
-            #return the top rank number from @ranks with the input host
-            # def rank(host)#on base of ranks
-            #     ranks.each do |id,line|
-            #         id = id.to_i
-            #         if host.class == Regexp
-            #             return id if line['host'] =~ host
-            #         elsif host.class == String
-            #             return id if line['host'] == host
-            #         end
-            #     end
-            #     return nil
-            # end
 
             def count
                 @count ||= @page.search("//span[@class='nums']").map{|num|num.content.gsub(/\D/,'').to_i unless num.nil?}.first
@@ -97,30 +43,44 @@ module Query
                 @related_keywords ||= @page.search("//div[@id=\"rs\"]//tr//a").map{|keyword| keyword.text}
             end
 
-            # def next
-            #     url = @page.xpath('//a[text()="下一页>"]').first
-            #     return if url.nil?
-            #     url = url['href']
-            #     url = URI.join(@baseuri,url).to_s
-            #     page = HTTParty.get(url)
-            #     r = Query::Result::Baidu.new(page)
-            #     r.baseuri = url
-            #     r.pagenumber=@pagenumber+1
-            #     r.perpage=@perpage
-            #     r
-
-            #     # @page = BaiduResult.new(Mechanize.new.click(@page.link_with(:text=>/下一页/))) unless @page.link_with(:text=>/下一页/).nil?
-            # end
             def has_result?
                 submit = @page.search('//a[text()="提交网址"]').first
                 return false if submit and submit['href'].include?'sitesubmit'
                 return true
             end
+
+            def next_url
+                @page.search("//a[text()='下一页>']").first['href']
+            end
+
             private
-            def parse_ad(table)
-                href = table.search("font[@color='#008000']").text.split(/\s/).first.strip
-                title = table.search("a").first.text.strip
-                {'title'=>title,'href' => href,'host'=>href}
+            def parse_ad(div)
+                #@todo  should be :
+                #title = div.xpath("*[contains(@class,'ec_title')]",MyFilter.new).first
+                title = div.xpath("//*[contains(@class,'ec_title')]",MyFilter.new).first
+                url = %w( span[@class='ec_url']  a[@class='EC_url'] ).map do |xpath|
+                    node = div.search(xpath).first
+                    node.text if node
+                end.compact.first
+                url = "http://" + url
+                {
+                    :text => title.text,
+                    :href => title['href'],
+                    :host => Addressable::URI.parse(URI.encode(url)).host
+                }
+            end
+
+            def parse_seo(table)
+                url = %w( span[@class="g"]  span[@class="c-showurl"] div[@class="op_zhidao_showurl"]).map do |xpath|
+                    span = table.search(xpath).first
+                    span.text.sub(/\d{4}-\d{1,2}-\d{1,2}/,'').strip if span
+                end.compact.first
+                host = Addressable::URI.parse(URI.encode("http://#{url}")).host
+                {
+                    :text => table.search("h3").first.text.strip,
+                    :href => table.search('a').first['href'].strip,
+                    :host => host
+                }
             end
         end
     end

@@ -75,7 +75,7 @@ describe Query::Result::SogouMobile do
 
   describe '#ads_bottom' do
     it "should have zero bottom ads" do
-      subject.ads_bottom.size.should == 0
+      subject.ads_bottom.size.should == 3
     end
 
     it "has an array of hashes with the required keys as the result of ads_bottom" do

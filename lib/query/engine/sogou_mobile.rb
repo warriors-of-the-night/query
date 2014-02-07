@@ -15,11 +15,7 @@ module Query
 				r.baseuri = uri
 				r
 				end
-
-
-
 			end
-
 		end
 	end
 end
