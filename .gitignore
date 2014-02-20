@@ -24,3 +24,9 @@ doc/
 lib/query/.DS_Store
 
 lib/query/.DS_Store
+
+.gemtags
+
+.tags
+
+.tags_sorted_by_file
