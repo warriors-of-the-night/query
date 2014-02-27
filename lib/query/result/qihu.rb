@@ -43,7 +43,7 @@ module Query
             :href => href,
             :host => host
           }
-        end
+        end.compact
       end
 
       def related_keywords
