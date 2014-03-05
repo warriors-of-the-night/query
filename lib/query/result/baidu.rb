@@ -75,8 +75,11 @@ module Query
           span = table.search(xpath).first
           span.text.sub(/\d{4}-\d{1,2}-\d{1,2}/,'').strip if span
         end.compact.first
-
-        host = Addressable::URI.parse(URI.encode("http://#{url}")).host
+        if url and !url.empty?
+          host = Addressable::URI.parse(URI.encode("http://#{url}")).host
+        else
+          host = nil
+        end
         {
           :text => table.search("h3").first.text.strip,
           :href => table.search('a').first['href'].strip,
