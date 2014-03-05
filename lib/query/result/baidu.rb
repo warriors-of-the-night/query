@@ -71,10 +71,11 @@ module Query
       end
 
       def parse_seo(table)
-        url = %w( span[@class="g"]  span[@class="c-showurl"] div[@class="op_zhidao_showurl"]).map do |xpath|
+        url = %w( span[@class="g"]  span[@class="c-showurl"] span[@class="op_wiseapp_showurl"] div[@class="op_zhidao_showurl"]).map do |xpath|
           span = table.search(xpath).first
           span.text.sub(/\d{4}-\d{1,2}-\d{1,2}/,'').strip if span
         end.compact.first
+
         host = Addressable::URI.parse(URI.encode("http://#{url}")).host
         {
           :text => table.search("h3").first.text.strip,
