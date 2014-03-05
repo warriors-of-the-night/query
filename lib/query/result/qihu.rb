@@ -62,6 +62,14 @@ module Query
       def has_result?
         !@page.search('//div[@id="main"]/h3').text().include?'没有找到该URL'
       end
+      #被封
+      def blocked?
+        @page.search('//ul[@id="m-result"]').first.nil? and @page.to_s.include?'您的请求暂时无法响应'
+      end
+      #被封的IP
+      def blocked_ip
+        (/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/.match @page.to_s).to_s
+      end
     end
   end
 end

@@ -84,4 +84,12 @@ describe Query::Result::Qihu do
       end
     end
   end
+
+  describe '#blocked?' do
+    specify {subject.blocked?.should == false}
+  end
+
+  describe '#has_result?' do
+    specify {subject.has_result?.should == true}
+  end
 end
