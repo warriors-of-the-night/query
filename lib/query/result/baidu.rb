@@ -9,16 +9,29 @@ module Query
         end
       end
 
+      # def ads_top
+      #   @page.search("//*[@class='result']/preceding-sibling::*[contains(@class,'EC_result')]").map.with_index do |div, index|
+      #     parse_ad(div).merge(:rank => index + 1)
+      #   end
+      # end
+
+      def ads_left
+        @page.xpath("//div[@id='content_left']//*[contains(@class,'EC_result')]",MyFilter.new).map.with_index do |div,index|
+          parse_ad(div)#.merge(:rank => index + 1)
+        end
+      end
+
       def ads_top
-        @page.search("//*[@class='result']/preceding-sibling::*[contains(@class,'EC_result')]").map.with_index do |div, index|
-          parse_ad(div).merge(:rank => index + 1)
+        ads_left.uniq.map.with_index do |ad,index|
+          ad.merge(:rank => index + 1)
         end
       end
 
       def ads_bottom
-        @page.search("//*[@class='result']/following-sibling::*[contains(@class,'EC_result')]").map.with_index do |div,index|
-          parse_ad(div).merge(:rank => index + 1)
-        end
+        # @page.search("//*[@class='result']/following-sibling::*[contains(@class,'EC_result')]").map.with_index do |div,index|
+        #   parse_ad(div)#.merge(:rank => index + 1)
+        # end
+        ads_top
       end
 
       def ads_right
@@ -57,11 +70,9 @@ module Query
       def parse_ad(div)
         #@todo  should be :
         #title = div.xpath("*[contains(@class,'ec_title')]",MyFilter.new).first
-        title = div.xpath("//*[contains(@class,'ec_title')]",MyFilter.new).first
-        url = %w( span[@class='ec_url']  a[@class='EC_url'] ).map do |xpath|
-          node = div.search(xpath).first
-          node.text if node
-        end.compact.first
+        title = div.xpath(".//*[contains(@class,'ec_title')]",MyFilter.new).first
+        url = div.xpath(".//*[contains(@class,'ec_url')]",MyFilter.new).first
+        url = url.nil? ? 'www.baidu.com' : url.text
         url = "http://" + url
         {
           :text => title.text,

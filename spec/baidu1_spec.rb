@@ -7,9 +7,7 @@ describe Query::Result::Baidu do
     subject.next_url.should == '/s?wd=%E5%90%8C%E7%A8%8B%E7%BD%91%E9%85%92%E5%BA%97%E9%A2%84%E8%AE%A2&pn=10&tn=baiduhome_pg&ie=utf-8&f=3&usm=2&rsv_page=1'
   end
 
-  it "have 69200000 results" do
-    subject.count.should == 69200000
-  end
+  specify{subject.count.should == 69200000 }
 
 
   describe '#seo_ranks' do
@@ -35,9 +33,7 @@ describe Query::Result::Baidu do
   end
 
   describe '#ads_top' do
-    it "should have 6 top ads" do
-      subject.ads_top.size.should == 3
-    end
+    specify{subject.ads_top.size.should == 3 }
 
     it "should find hotel.elong.com at the first position in the top ads" do
       subject.ads_top[0][:host].should == 'www.17u.cn'
@@ -55,9 +51,7 @@ describe Query::Result::Baidu do
   end
 
   describe '#ads_right' do
-    it "should have 5 right ads" do
-      subject.ads_right.size.should == 5
-    end
+    specify{subject.ads_right.size.should == 5 }
 
     it "has an array of hashes with the required keys as the result of ads_right" do
       subject.ads_right.class.should == Array
@@ -71,9 +65,7 @@ describe Query::Result::Baidu do
   end
 
   describe '#ads_bottom' do
-    it "should have zero bottom ads" do
-      subject.ads_bottom.size.should == 3
-    end
+    specify {subject.ads_bottom.size.should == 3 }
 
     it "has an array of hashes with the required keys as the result of ads_bottom" do
       subject.ads_bottom.class.should == Array
