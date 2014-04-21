@@ -4,7 +4,7 @@ module Query
       include Query::Result
       def seo_ranks
         return @ranks unless @ranks.nil?
-        @page.search("//*[@class='result']|//*[@class='result-op']|//*[@class='result-op c-container']").map.with_index do |table,index|
+        @page.search("//*[@class='result']|//*[@class='result-op']|//*[@class='result-op c-container']|//*[@class='result c-container']").map.with_index do |table,index|
           parse_seo(table).merge({:rank => index + 1})
         end
       end
