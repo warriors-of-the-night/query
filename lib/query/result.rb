@@ -31,6 +31,7 @@ module Query
     end
 
     def next
+      return false unless next_url
       @next_url = URI.join(@baseuri,next_url).to_s
       next_page = HTTParty.get @next_url
       next_page = self.class.new(next_page)
