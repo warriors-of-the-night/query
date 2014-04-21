@@ -38,7 +38,7 @@ module Query
       next_page.pagenumber = @pagenumber + 1
       next_page.perpage = @perpage
       r = next_page
-      r.baseuri = next_url
+      r.baseuri = @next_url
       r
     end
   end
