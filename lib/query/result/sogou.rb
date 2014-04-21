@@ -54,7 +54,9 @@ module Query
       end
 
       def next_url
-        @page.search("//a[text()='下一页>']").first['href']
+        next_btn = @page.search("//a[text()='下一页>']")
+        return false if next_btn.empty?
+        next_btn.first['href']
       end
 
       def has_result?
