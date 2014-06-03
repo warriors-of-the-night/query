@@ -93,9 +93,12 @@ module Query
         else
           host = nil
         end
+        href = table.search('a').first['href']
+        href = href.strip if href
+
         {
           :text => table.search("h3").first.text.strip,
-          :href => table.search('a').first['href'].strip,
+          :href => href,
           :host => host
         }
       end

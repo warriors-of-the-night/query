@@ -2,6 +2,7 @@ module Query
     module Engine
         class Baidu
             include Query::Engine
+            Host = 'www.baidu.com'
             BaseUri = 'http://www.baidu.com/s?'
             Options = {
                 :headers => {"User-Agent" => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.73.11 (KHTML, like Gecko) Version/7.0.1 Safari/537.73.11'}
@@ -41,13 +42,17 @@ module Query
                 return HTTParty.get("http://index.baidu.com/main/word.php?word=#{URI.encode(wd.encode("GBK"))}").include?"boxFlash"
             end
 
-            def self.query(wd)
+            def self.query(wd,params={})
                 q = Array.new
-                q << "wd=#{wd}"
+                q << "wd=#{URI.encode(wd)}"
                 q << "rn=#{@perpage.to_i}" if @perpage
+                params.each do |k,v|
+                    q << "#{k.to_s}=#{v.to_s}"
+                end
                 queryStr = q.join("&")
                 #uri = URI.encode((BaseUri + queryStr).encode('GBK'))
-                uri = URI.encode((BaseUri + queryStr))
+                # uri = URI.encode((BaseUri + queryStr))
+                uri = URI::HTTP.build(:host=>Host,:path=>'/s',:query=>q.join('&'))
                 # begin
                     # @page = @a.get uri
                     @page = HTTParty.get(uri,Options)
@@ -73,18 +78,22 @@ module Query
             end
 
             #site:xxx.yyy.com
-            def pages(host)
-                query("site:#{host}")
+            def self.query_within(host,query)
+                self.query("#{query} site:#{host}")
+            end
+
+            def self.pages(host)
+                self.query("site:#{host}")
             end
 
             #domain:xxx.yyy.com/path/file.html
-            def links(uri)
-                query("domain:\"#{uri}\"")
+            def self.links(uri)
+                self.query("domain:\"#{uri}\"")
             end
 
             #site:xxx.yyy.com inurl:zzz
-            def pages_with(host,string)
-                query("site:#{host} inurl:#{string}")
+            def self.pages_with(host,string)
+                self.query("site:#{host} inurl:#{string}")
             end
         end
     end
