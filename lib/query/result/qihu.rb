@@ -17,7 +17,8 @@ module Query
       def ads_top
         @page.search("//ul[@id='djbox']/li").map.with_index do |li,index|
           a = li.search("a").first
-          href = CGI.parse(URI(a['e_href']).query)['aurl'].first
+          href = li.search("cite").first.text.downcase
+
           {
             :rank => index + 1,
             :text => a.text,
