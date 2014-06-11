@@ -35,8 +35,7 @@ module Query
       def ads_right
         @page.search("//ul[@id='rightbox']/li").map.with_index do |li,index|
           a = li.search('a').first
-          next unless a['e_href']
-          href = CGI.parse(URI(a['e_href']).query)['aurl'].first
+          href = li.search("cite").first.text.downcase
           host = Addressable::URI.parse(URI.encode(href)).host
           {
             :rank => index + 1,
