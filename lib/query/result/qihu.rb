@@ -37,6 +37,7 @@ module Query
           a = li.search('a').first
           href = li.search("cite").first.text.downcase
           host = Addressable::URI.parse(URI.encode(href)).host
+          next if a.text.include?'想在360推广您的产品服务吗'
           {
             :rank => index + 1,
             :text => a.text,
