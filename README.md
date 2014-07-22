@@ -2,6 +2,7 @@ Query
 ==========
 
 
+
 #to get the result list by querying "abc"
 
 Query::Engine::Baidu.new.query("abc").ranks().each do |id,value|
