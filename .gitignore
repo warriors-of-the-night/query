@@ -22,7 +22,7 @@ tmp
 _yardoc
 doc/
 lib/query/.DS_Store
-
+*.html
 lib/query/.DS_Store
 
 .gemtags
