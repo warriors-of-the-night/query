@@ -64,9 +64,9 @@ describe Query::Result::SogouMobile do
         subject.class.should == Query::Result::SogouMobile
     end
 
-    it "'s next page is another instance of Query::Result::Sogou" do
-        subject.next.class.should == Query::Result::SogouMobile
-    end
+    # it "'s next page is another instance of Query::Result::Sogou" do
+    #     subject.next.class.should == Query::Result::SogouMobile
+    # end
 
     it "have over 1000 results" do
         subject.count.should be_nil
