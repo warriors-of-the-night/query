@@ -1,13 +1,12 @@
-require 'query'
-require 'pathname'
 require 'awesome_print'
-path_root = Pathname.new(__dir__)
-path_samples = File.join(path_root,'samples')
-$sample_qihu = File.join(path_samples,'qihu.html')
-$sample_sogou = File.join(path_samples,'sogou.html')
-$sample_msogou = File.join(path_samples,'msogou.html')
-$sample_baidu1 = File.join(path_samples,'baidu1.html')
-$sample_baidu2 = File.join(path_samples,'baidu2.html')
-$sample_mbaidu1 = File.join(path_samples,'mbaidu1.html')
-$sample_mbaidu2 = File.join(path_samples,'mbaidu2.html')
-$sample_baidu_api = File.join(path_samples,'baidu_api.html')
+require_relative "../lib/query"
+
+$sample_qihu = "#{__dir__}/samples/qihu.html"
+$sample_sogou = "#{__dir__}/samples/sogou.html"
+$sample_msogou = "#{__dir__}/samples/msogou.html"
+$sample_baidu1 = "#{__dir__}/samples/baidu1.html"
+$sample_baidu2 = "#{__dir__}/samples/baidu2.html"
+$sample_mbaidu1 = "#{__dir__}/samples/mbaidu1.html"
+$sample_mbaidu2 = "#{__dir__}/samples/mbaidu2.html"
+$sample_baidu_api = "#{__dir__}/samples/baidu_api.html"
+$sample_mbaidu_api = "#{__dir__}/samples/mbaidu_api.html"
