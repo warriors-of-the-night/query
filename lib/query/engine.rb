@@ -8,10 +8,3 @@ module Query
     end
   end
 end
-require 'httparty'
-require 'query/engine/baidu'
-require 'query/engine/baidu_mobile'
-require 'query/engine/qihu'
-require 'query/engine/qihu_mobile'
-require 'query/engine/sogou'
-require 'query/engine/sogou_mobile'

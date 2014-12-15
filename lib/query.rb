@@ -4,8 +4,11 @@ class MyFilter
     # set.any? { |x| x.to_s.downcase == str.downcase}
   end
 end
-require 'query/result'
-require 'query/engine'
+
+require 'require_all'
+require 'uri'
+require 'httparty'
+require_all "#{__dir__}/query"
 
 module Query
   def self.get_redirect_url(url)
