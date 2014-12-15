@@ -11,7 +11,6 @@ module Query
 
             def ads_top
                 @ads_top ||= @page.search("//*[@class='result']/preceding-sibling::div[@class='ec_wise_ad']/div").map.with_index do |div,index|
-                    puts index
                     parse_ad(div).merge({:rank => index + 1})
                 end
             end
