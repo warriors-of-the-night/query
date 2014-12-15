@@ -49,7 +49,7 @@ module Query
       end
 
       def count
-        @count ||= @page.search("//span[@class='nums']").map{|num|num.content.gsub(/\D/,'').to_i unless num.nil?}.first
+        @count ||= @page.search("//div[@class='nums']").map{|num|num.content.gsub(/\D/,'').to_i unless num.nil?}.first
       end
 
       def related_keywords
