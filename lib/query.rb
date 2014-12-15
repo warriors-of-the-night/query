@@ -8,7 +8,7 @@ end
 require 'require_all'
 require 'uri'
 require 'httparty'
-require_all "query"
+require_all "#{__dir__}/query"
 
 module Query
   def self.get_redirect_url(url)
