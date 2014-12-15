@@ -42,11 +42,8 @@ module Query
       end
 
       def count
-        ["//div[@class='zhanzhang']//em", "//span[@id='scd_num']"].each do |xpath|
-          if counter_block = @page.search(xpath).first
-            return counter_block.text.gsub(/\D/,'').to_i
-          end
-        end
+        node = @page.search("//resnum[@id='scd_num']").first
+        node ? node.text.gsub(/\D/,'').to_i : nil
       end
 
       def related_keywords
