@@ -73,11 +73,9 @@ module Query
       private
       def parse_ad(div)
         #@todo  should be :
-        #title = div.xpath("*[contains(@class,'ec_title')]",MyFilter.new).first
-        title = div.xpath(".//*[contains(@class,'ec_title')]",MyFilter.new).first
-        url = div.xpath(".//*[contains(@class,'ec_url')]",MyFilter.new).first
+        title = div.xpath(".//div[1]/h3/a",MyFilter.new).first
+        url   = div.xpath(".//div[3]/span",MyFilter.new).first
         url = url.nil? ? 'www.baidu.com' : url.text
-        url = "http://" + url
         {
           :text => title.text,
           :href => title['href'],
