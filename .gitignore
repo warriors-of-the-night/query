@@ -32,3 +32,4 @@ lib/query/.DS_Store
 .tags_sorted_by_file
 
 .DS_Store
+*test*
