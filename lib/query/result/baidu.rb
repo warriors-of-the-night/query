@@ -4,8 +4,8 @@ module Query
       include Query::Result
       def seo_ranks
         return @ranks unless @ranks.nil?
-        @page.search("//*[@class='result']|//*[@class='result-op']|//*[@class='result-op c-container']|//*[@class='result c-container']").map.with_index do |table,index|
-          parse_seo(table).merge({:rank => index + 1})
+        @page.search("//div[@id='content_left']/*[contains(@class, 'result')]").map.with_index do |div,index|
+          parse_seo(div).merge({:rank => index + 1})
         end
       end
 
@@ -57,29 +57,22 @@ module Query
         url = url.nil? ? 'www.baidu.com' : url.text
         url = "http://" + url
         {
-          :text => title.text,
-          :href => title['href'],
+          :text => title.text.strip,
+          :href => title['href'].to_s.strip,
           :host => Addressable::URI.parse(URI.encode(url)).host
         }
       end
 
-      def parse_seo(table)
-        url = %w( span[@class="g"]  span[@class="c-showurl"] span[@class="op_wiseapp_showurl"] div[@class="op_zhidao_showurl"]).map do |xpath|
-          span = table.search(xpath).first
-          span.text.sub(/\d{4}-\d{1,2}-\d{1,2}/,'').strip if span
-        end.compact.first
-        if url and !url.empty?
-          host = Addressable::URI.parse(URI.encode("http://#{url}")).host
-        else
-          host = nil
-        end
-        href = table.search('a').first['href']
-        href = href.strip if href
+      def parse_seo(div)
+        title = div.xpath("h3/a").first
+        url = %w(span[@class="g"]  span[@class="c-showurl"] span[@class="op_wiseapp_showurl"] div[@class="op_zhidao_showurl"]).inject(nil){|ans, xpath| ans || div.search(xpath).first}
+        url = url.nil? ? 'www.baidu.com' : url.text.sub(/\d{4}-\d{1,2}-\d{1,2}/,'').strip
+        url = "http://" + url
 
         {
-          :text => table.search("h3").first.text.strip,
-          :href => href,
-          :host => host
+          :text => title.text.strip,
+          :href => title['href'].to_s.strip,
+          :host => Addressable::URI.parse(URI.encode(url)).host
         }
       end
     end
