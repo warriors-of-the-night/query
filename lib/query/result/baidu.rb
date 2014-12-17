@@ -9,29 +9,16 @@ module Query
         end
       end
 
-      # def ads_top
-      #   @page.search("//*[@class='result']/preceding-sibling::*[contains(@class,'EC_result')]").map.with_index do |div, index|
-      #     parse_ad(div).merge(:rank => index + 1)
-      #   end
-      # end
-
-      def ads_left
-        @page.xpath("//div[@id='content_left']//*[contains(@id,'00')][string-length(@id)=4]",MyFilter.new).map.with_index do |div,index|
-          parse_ad(div)#.merge(:rank => index + 1)
-        end
-      end
-
       def ads_top
-        ads_left.uniq.map.with_index do |ad,index|
-          ad.merge(:rank => index + 1)
+        @page.search("//div[@id='content_left']/div[not(contains(@class, 'result') or contains(@class, 'leftBlock')) ]").map.with_index do |div, index|
+          parse_ad(div).merge(:rank => index + 1)
         end
       end
 
       def ads_bottom
-        # @page.search("//*[@class='result']/following-sibling::*[contains(@class,'EC_result')]").map.with_index do |div,index|
-        #   parse_ad(div)#.merge(:rank => index + 1)
-        # end
-        ads_top
+        @page.search("//div[@id='content_left']/table[not(contains(@class, 'result') or contains(@class, 'leftBlock')) ]").map.with_index do |div, index|
+          parse_ad(div).merge(:rank => index + 1)
+        end
       end
 
       def ads_right
@@ -73,9 +60,10 @@ module Query
       private
       def parse_ad(div)
         #@todo  should be :
-        title = div.xpath(".//div[1]/h3/a",MyFilter.new).first
-        url   = div.xpath(".//div[3]/span",MyFilter.new).first
+        title = div.xpath(div.name == "div" ? "div[1]/h3/a" : "tbody/tr[2]/td/a[1]",MyFilter.new).first
+        url   = div.xpath(div.name == "div" ? "div[3]/span" : "tbody/tr[2]/td/a[2]",MyFilter.new).first
         url = url.nil? ? 'www.baidu.com' : url.text
+        url = "http://" + url
         {
           :text => title.text,
           :href => title['href'],
