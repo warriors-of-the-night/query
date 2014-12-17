@@ -23,17 +23,7 @@ module Query
 
       def ads_right
         @page.search("//div[@id='ec_im_container']/div[position()>1]").map.with_index do |div,index|
-          warn '-'*100
-          title = div.search("a[1]").first
-          url = div.search("a[3]/font[last()]").first
-          url = url.nil? ? 'www.baidu.com' : url.text
-          url = "http://#{url}"
-          {
-            :rank => index + 1,
-            :text => title.text.strip,
-            :href => title['href'].strip,
-            :host => Addressable::URI.parse(URI.encode(url)).host
-          }
+          parse_ad(div).merge(:rank => index + 1)
         end
       end
 
@@ -62,8 +52,8 @@ module Query
       private
       def parse_ad(div)
         #@todo  should be :
-        title = div.xpath(div.name == "div" ? "div[1]/h3/a" : "tbody/tr[2]/td/a[1]",MyFilter.new).first
-        url   = div.xpath(div.name == "div" ? "div[3]/span" : "tbody/tr[2]/td/a[2]",MyFilter.new).first
+        title = %w(div[1]/h3/a tbody/tr[2]/td/a[1] a[1]).inject(nil){|ans, xpath| ans || div.xpath(xpath).first}
+        url   = %w(div[3]/span tbody/tr[2]/td/a[2] a[3]/font[last()]).inject(nil){|ans, xpath| ans || div.xpath(xpath).first}
         url = url.nil? ? 'www.baidu.com' : url.text
         url = "http://" + url
         {
