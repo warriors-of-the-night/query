@@ -70,6 +70,7 @@ module Query
         url = "http://" + url
 
         {
+          :is_vr=> div['class'] == 'result-op c-container',
           :text => title.text.strip,
           :href => title['href'].to_s.strip,
           :host => Addressable::URI.parse(URI.encode(url)).host
