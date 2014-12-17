@@ -16,7 +16,7 @@ module Query
       # end
 
       def ads_left
-        @page.xpath("//div[@id='content_left']//*[contains(@class,'EC_result')]",MyFilter.new).map.with_index do |div,index|
+        @page.xpath("//div[@id='content_left']//*[contains(@id,'00')][string-length(@id)=4]",MyFilter.new).map.with_index do |div,index|
           parse_ad(div)#.merge(:rank => index + 1)
         end
       end
