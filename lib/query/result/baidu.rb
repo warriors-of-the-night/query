@@ -22,14 +22,16 @@ module Query
       end
 
       def ads_right
-        @page.search("//div[@id='ec_im_container']/div[@id]").map.with_index do |div,index|
-          a = div.search('a').first
-          url = div.search("*[@class='EC_url']").first.text
+        @page.search("//div[@id='ec_im_container']/div[position()>1]").map.with_index do |div,index|
+          warn '-'*100
+          title = div.search("a[1]").first
+          url = div.search("a[3]/font[last()]").first
+          url = url.nil? ? 'www.baidu.com' : url.text
           url = "http://#{url}"
           {
             :rank => index + 1,
-            :text => a.text.strip,
-            :href => a['href'].strip,
+            :text => title.text.strip,
+            :href => title['href'].strip,
             :host => Addressable::URI.parse(URI.encode(url)).host
           }
         end
