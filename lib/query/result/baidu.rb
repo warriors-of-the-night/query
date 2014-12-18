@@ -65,14 +65,12 @@ module Query
 
       def parse_seo(div)
         title = %w(div[1]/h3/a h3/a).inject(nil){|ans, xpath| ans || div.xpath(xpath).first}
-        url   = %w(span[@class="g"] span[@class="c-showurl"]/span[@class="c-showurl"] span[@class="c-showurl"] span[@class="op_wiseapp_showurl"] div[@class="op_zhidao_showurl"]).inject(nil){|ans, xpath| ans || div.search(xpath).first}
-        url = url.nil? ? 'www.baidu.com' : url.text.sub(/\d{4}-\d{1,2}-\d{1,2}/,'').strip
-        url = "http://" + url
+        url   = Query::get_redirect_url(title['href'].to_s.strip)
 
         {
           :is_vr=> !div.xpath("div[@class='c-border']").first.nil?,
           :text => title.text.strip,
-          :href => Query::get_redirect_url(title['href'].to_s.strip),
+          :href => url,
           :host => Addressable::URI.parse(URI.encode(url)).host
         }
       end
