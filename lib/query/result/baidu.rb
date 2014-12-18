@@ -64,8 +64,9 @@ module Query
       end
 
       def parse_seo(div)
-        title = %w(div[1]/h3/a h3/a).inject(nil){|ans, xpath| ans || div.xpath(xpath).first}
-        url   = Query::get_redirect_url(title['href'].to_s.strip)
+        title = %w(div[1]/h3/a h3/a div/div[1]/div[1]/div).inject(nil){|ans, xpath| ans || div.xpath(xpath).first}
+        url   = title['href'] ? Query::get_redirect_url(title['href'].to_s.strip) : ""
+        url = 'http://www.baidu.com' if url.empty?
 
         {
           :is_vr=> !div.xpath("div[@class='c-border']").first.nil?,
