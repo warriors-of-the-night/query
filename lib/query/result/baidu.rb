@@ -70,7 +70,7 @@ module Query
         url = "http://" + url
 
         {
-          :is_vr=> div['class'] == 'result-op c-container',
+          :is_vr=> !div.xpath("div[@class='c-border']").first.nil?,
           :text => title.text.strip,
           :href => Query::get_redirect_url(title['href'].to_s.strip),
           :host => Addressable::URI.parse(URI.encode(url)).host
