@@ -12,6 +12,6 @@ require_all "#{__dir__}/query"
 
 module Query
   def self.get_redirect_url(url)
-    Net::HTTP.get_response(URI(url)).response['location']
+    Net::HTTP.get_response(URI(url)).response['location'] || url
   end
 end

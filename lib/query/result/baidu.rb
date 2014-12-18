@@ -72,7 +72,7 @@ module Query
         {
           :is_vr=> div['class'] == 'result-op c-container',
           :text => title.text.strip,
-          :href => title['href'].to_s.strip,
+          :href => Query::get_redirect_url(title['href'].to_s.strip),
           :host => Addressable::URI.parse(URI.encode(url)).host
         }
       end
