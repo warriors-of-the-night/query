@@ -72,7 +72,7 @@ module Query
         # url = 'http://www.baidu.com' if url.empty?
 
         {
-          :is_vr=> !div.xpath("div[@class='c-border']").first.nil?,
+          :is_vr=> %w(div[@class='c-border'] div/div[@class='ecl-tg-content']).any?{|xpath| div.xpath(xpath).first},
           :text => title.text.strip,
           :href => title['href'].to_s.strip,
           :host => Addressable::URI.parse(URI.encode(url)).host
