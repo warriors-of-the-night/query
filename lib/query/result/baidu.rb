@@ -84,7 +84,7 @@ module Query
 
         begin
           {
-            :is_vr=> %w(div[@class='c-border'] div/div[@class='ecl-tg-content']).any?{|xpath| div.xpath(xpath).first},
+            :is_vr=> div['class'].include?("result-op"),
             :text => title.text.strip,
             :href => title['href'].to_s.strip,
             :host => Addressable::URI.parse(URI.encode(url)).host
