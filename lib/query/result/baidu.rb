@@ -10,13 +10,13 @@ module Query
       end
 
       def ads_top
-        @page.search("//div[@id='content_left']/*[not(contains(@class, 'result') or contains(@class, 'leftBlock') or name()='br' or @id='rs_top_new' or @id='super_se_tip') and position()<=7]").map.with_index do |div, index|
+        @page.search("//div[@id='content_left']/*[not(contains(@class, 'result') or contains(@class, 'leftBlock') or name()='br' or @id='rs_top_new' or @id='super_se_tip' or @class='rs') and position()<=7]").map.with_index do |div, index|
           parse_ad(div).merge(:rank => (index + 1) + (@pagenumber -1) * 10)
         end
       end
 
       def ads_bottom
-        @page.search("//div[@id='content_left']/*[not(contains(@class, 'result') or contains(@class, 'leftBlock') or name()='br' or @id='rs_top_new' or @id='super_se_tip') and position()>=11]").map.with_index do |div, index|
+        @page.search("//div[@id='content_left']/*[not(contains(@class, 'result') or contains(@class, 'leftBlock') or name()='br' or @id='rs_top_new' or @id='super_se_tip' or @class='rs') and position()>=11]").map.with_index do |div, index|
           parse_ad(div).merge(:rank => (index + 1) + (@pagenumber -1) * 10)
         end
       end
