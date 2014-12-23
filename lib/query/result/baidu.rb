@@ -61,11 +61,17 @@ module Query
         url   = %w(div[3]/span tbody/tr[2]/td/a[2] a[3]/font[last()]).inject(nil){|ans, xpath| ans || div.xpath(xpath).first}
         url = url.nil? ? 'www.baidu.com' : url.text
         url = "http://" + url
-        {
-          :text => title.text.strip,
-          :href => title['href'].to_s.strip,
-          :host => Addressable::URI.parse(URI.encode(url)).host
-        }
+
+        begin
+          {
+            :text => title.text.strip,
+            :href => title['href'].to_s.strip,
+            :host => Addressable::URI.parse(URI.encode(url)).host
+          }
+        rescue Exception => e
+          warn "Error in parse_ad method : " + e.message
+          {}
+        end
       end
 
       def parse_seo(div)
@@ -76,12 +82,17 @@ module Query
         # url = Query::get_redirect_url(title['href'].to_s.strip) if url.include?('elong.com') && title['href']
         # url = 'http://www.baidu.com' if url.empty?
 
-        {
-          :is_vr=> %w(div[@class='c-border'] div/div[@class='ecl-tg-content']).any?{|xpath| div.xpath(xpath).first},
-          :text => title.text.strip,
-          :href => title['href'].to_s.strip,
-          :host => Addressable::URI.parse(URI.encode(url)).host
-        }
+        begin
+          {
+            :is_vr=> %w(div[@class='c-border'] div/div[@class='ecl-tg-content']).any?{|xpath| div.xpath(xpath).first},
+            :text => title.text.strip,
+            :href => title['href'].to_s.strip,
+            :host => Addressable::URI.parse(URI.encode(url)).host
+          }
+        rescue Exception => e
+          warn "Error in parse_seo method : " + e.message
+          {}
+        end
       end
     end
   end
