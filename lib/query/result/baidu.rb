@@ -2,6 +2,11 @@ module Query
   module Result
     class Baidu
       include Query::Result
+
+      def html
+        @page.to_html
+      end
+
       def seo_ranks
         return @ranks unless @ranks.nil?
         @page.search("//div[@id='content_left']/*[contains(@class, 'result')]").map.with_index do |div,index|
