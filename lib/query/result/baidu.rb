@@ -7,6 +7,10 @@ module Query
         @page.to_html
       end
 
+      def relatives
+        @page.search("//div[@id='rs']/table/tr/th/a").map{|tag| tag.text}
+      end
+
       def seo_ranks
         return @ranks unless @ranks.nil?
         @page.search("//div[@id='content_left']/*[contains(@class, 'result')]").map.with_index do |div,index|
