@@ -46,3 +46,4 @@ module Query
 end
 require "nokogiri"
 require "addressable/uri"
+require "json"
