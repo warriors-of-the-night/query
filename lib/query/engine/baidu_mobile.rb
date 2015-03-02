@@ -20,7 +20,7 @@ module Query
                     # warn "#{__FILE__} #{__LINE__} #{uri} fetch error: #{e.to_s}"
                     # return false
                 # end
-            end
+            end            
         end
     end
 end
