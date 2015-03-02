@@ -43,7 +43,7 @@ module Query
             def parse_ad(div)
                 url = div.search("link").first['href']
                 {
-                    :text => div.search('a/text()').text.strip,
+                    :text => div.search('a/text()').text.gsub(/\n|\s/,''),
                     :href => div.search('a').first['href'],
                     :host => Addressable::URI.parse(URI.encode(url)).host
                 }
@@ -64,7 +64,7 @@ module Query
                     host = div.search("*[@class='site']").first.text
                 end
                 {
-                    :text => a.text,
+                    :text => a.text.gsub(/\n|\s/,''),
                     :href => a['href'],
                     :host => host
                 }
