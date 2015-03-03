@@ -1,6 +1,6 @@
 module Query
   module Result
-    attr_accessor :baseuri,:pagenumber,:perpage
+    attr_accessor :baseuri,:pagenumber,:perpage,:page
     def initialize(page)
       @page = Nokogiri::HTML page
       @pagenumber = 1
