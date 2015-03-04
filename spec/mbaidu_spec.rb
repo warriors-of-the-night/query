@@ -5,7 +5,7 @@ describe Query::Result::BaiduMobile do
     expect(sample.count).to eq nil
   end
 
-  it "cannot get url of next page" do
+  it "canot get url of next page" do
     expect(sample.next_url).to eq nil
   end
 

@@ -60,6 +60,7 @@ module Query
                     r.baseuri = uri
                     r.pagenumber = 1
                     r.perpage = @perpage
+                    r.options = Options
                     r
                 # rescue Exception => e
                 #     warn e.to_s

@@ -1,6 +1,6 @@
 module Query
   module Result
-    attr_accessor :baseuri,:pagenumber,:perpage,:page
+    attr_accessor :baseuri,:pagenumber,:perpage,:options
     def initialize(page)
       @page = Nokogiri::HTML page
       @pagenumber = 1
@@ -32,14 +32,10 @@ module Query
 
     def next
       return false unless next_url
-      @next_url = URI.join(@baseuri,next_url).to_s
-      next_page = HTTParty.get @next_url
-      next_page = self.class.new(next_page)
-      next_page.baseuri = @next_url
-      next_page.pagenumber = @pagenumber + 1
-      next_page.perpage = @perpage
-      r = next_page
-      r.baseuri = @next_url
+      @next_url = URI.join(@baseuri, next_url)
+      next_page = HTTParty.get(@next_url, @options)
+      r = self.class.new(next_page)
+      r.pagenumber, r.perpage, r.options, r.baseuri = @pagenumber + 1, @perpage, @options, @baseuri
       r
     end
   end
