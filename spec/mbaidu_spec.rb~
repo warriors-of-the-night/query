@@ -28,7 +28,7 @@ describe Query::Result::BaiduMobile do
   end
   describe '#ads_top' do
     it "should put 携程网-酒店全场酒店2折起 to be the first ads_top title" do
-      expect(sample.ads_top.first[:text]).to eq '携程网-酒店全场酒店2折起!'
+      expect(sample.ads_top.first[:text]).to eq '携程网-酒店全场酒店2折起'
     end
 
     it "should have 3 ads item" do
