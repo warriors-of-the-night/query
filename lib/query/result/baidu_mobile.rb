@@ -6,21 +6,21 @@ module Query
       def seo_ranks
         s_res =  @page.at("//div[@id='results']")
         @seo_ranks ||= s_res.css("div.result").map.with_index do |div,index|
-          parse_seo(div).merge({:rank => index + 1})
+          parse_seo(div).merge({:rank => (index + 1) + (@pagenumber -1) * 10})
         end
       end
 
       def ads_top
         selector = "//*[@class='result']/preceding-sibling::div[not (contains(@class,'result'))]/div/div/a[not (contains(@href,'http://baozhang.baidu.com/guarantee'))]/.."
         @ads_top ||= @page.search(selector).map.with_index do |div,index|
-          parse_ad(div).merge({:rank => index + 1})
+          parse_ad(div).merge({:rank => (index + 1) + (@pagenumber -1) * 10})
         end
       end
 
       def ads_bottom
         selector = "//*[@class='result']/following-sibling::div[not (contains(@class,'result'))]/div/div/a[not (contains(@href,'http://baozhang.baidu.com/guarantee'))]/.."
         @ads_bottom ||= @page.search(selector).map.with_index do |div,index|
-          parse_ad(div).merge({:rank => index + 1})
+          parse_ad(div).merge({:rank => (index + 1) + (@pagenumber -1) * 10})
         end
       end
 
@@ -38,7 +38,8 @@ module Query
       end
 
       def next_url
-        url = "/s?#{self.baseuri.query}&pn=#{@pagenumber*10}"
+      	next_bn = @page.search("//div[@id='pagenav']/a").first
+        url = next_bn.nil? ? "/s?#{@baseuri.query}&pn=#{@pagenumber*10}" : next_bn['href']
         url
       end
 
@@ -53,11 +54,7 @@ module Query
           url = div.search('link')
           if url.empty?
             url = div.search(".//span[contains(text(),'.com')]").first
-            if not url
-              url = title_link['href']
-            else
-              url = "http://#{url.text.strip}"
-            end
+            url = url.nil? ? "http://m.baidu.com" : "http://#{url.text.strip}"
             title = title_link.text
           else
             url = url.first['href']
@@ -113,7 +110,7 @@ module Query
             location = response['location']
             redirect(location, limit-1)
           else
-            return nil
+            return "m.baidu.com"
         end
       end 
     end
