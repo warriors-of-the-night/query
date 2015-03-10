@@ -75,18 +75,18 @@ module Query
         begin
           title_link = div.search('a').first
           href = title_link['href']
-          href = href.include?('m.baidu.com') ? href : "http://m.baidu.com" + href
-          if div['srcid'] and div['tpl'] and div['data-log']
-            url = JSON.parse(div['data-log'].gsub("'",'"'))['mu']
-            host  = url=='' ? redirect(href) : Addressable::URI.parse(URI.encode(url)).host
-            is_vr = true
-          elsif div['srcid'] == 'map'
+          href = href.include?('m.baidu.com') ? href : "http://m.baidu.com#{href}"
+          if div['srcid'] == 'map'
             host, is_vr = 'map.baidu.com', true
           elsif div['class']=='result'
             host = div.search(".//*[@class='site']").first
             host = host.text if host
+          elsif div['tpl'] and div['data-log']
+            url = JSON.parse(div['data-log'].gsub("'",'"'))['mu']
+            host  = url=='' ? "m.baidu.com" : Addressable::URI.parse(URI.encode(url)).host
+            is_vr = true
           end
-          host = host || redirect(href)
+          host = host || "m.baidu.com"
           is_vr = (is_vr.nil? and !host[/baidu|nuomi/]) ? false : true     
           {   
             :is_vr => is_vr,
