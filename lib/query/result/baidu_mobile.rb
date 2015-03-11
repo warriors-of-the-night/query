@@ -87,9 +87,9 @@ module Query
             is_vr = true
           end
           host = host || "m.baidu.com"
-          is_vr = (is_vr.nil? and !host[/baidu|nuomi/]) ? false : true     
+          # is_vr = (is_vr.nil? and !host[/baidu|nuomi/]) ? false : true     
           {   
-            :is_vr => is_vr,
+            :is_vr => false || is_vr,
             :text  => title_link.text.gsub(/\n|\s/,'')[0..30],
             :href  => href,
             :host  => host
