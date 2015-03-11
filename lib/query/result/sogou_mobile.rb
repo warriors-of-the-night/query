@@ -51,12 +51,18 @@ module Query
       end
       
       def parse_seo_ranks(seo_div)
+      	begin
       	a    = seo_div.search(".//a[contains(@href,'url=')]")[0]
 			  href = URI.decode(CGI.parse(URI(URI.encode(a['href'])).query)['url'][0])
+			  if href==""
+			  	href = seo_div.search(".//div[@class='citeurl']/text()")[0].text.gsub(/ |-/,"")
+			  	href = "http://#{href}"
+			  end
 			  if seo_div['class']=='result'
-			  	is_vr, title = false, a.search("./text()|./em")
+			  	is_vr, title = false, a.search("./text()|./em|./span")
 			  else
-			  	title = seo_div.search('h3')[0] || a.search("./text()|./span|./em")
+			    seo_div.css('script').remove    # remove all script tags
+			  	title = seo_div.search('.//h3')[0] || a.search("./text()|./span|./em")
 			    is_vr = true
 			  end
 					{
@@ -65,7 +71,12 @@ module Query
 						:host  => URI(URI.encode(href)).host,
 						:is_vr => is_vr
 					}
+				rescue Exception => e
+          warn "Error in parse_seo method : " + e.message
+          {}
+        end
       end
+      
 		end
 	end
 end
