@@ -5,7 +5,7 @@ describe Query::Result::SogouMobile do
     it "is an instance of #{Query::Result::SogouMobile}" do
         subject.class.should == Query::Result::SogouMobile
     end
-
+    
     it "has an array of hashes with the required keys as the result of ads_top" do
         subject.ads_top.class.should == Array
         subject.ads_top.each do |ad_top|
@@ -15,7 +15,12 @@ describe Query::Result::SogouMobile do
             ad_top.should have_key(:text)
         end
     end
-
+    
+    it "has an array of related_keywords" do
+        subject.related_keywords.class.should == Array
+        expect(subject.related_keywords.size).to eq 8
+    end
+    
     it "has an array of hashes with the required keys as the result of ads_right" do
         subject.ads_right.class.should == Array
         subject.ads_right.each do |ad_right|
@@ -35,25 +40,28 @@ describe Query::Result::SogouMobile do
             ad_bottom.should have_key(:text)
         end
     end
+    
+    it "has the url of next page" do
+      expect(subject.next_url).to eq "http://wap.sogou.com/web/searchList.jsp?keyword=%E9%85%92%E5%BA%97%E9%A2%84%E8%AE%A2&p=2"
+    end
 end
 
-result = Query::Engine::SogouMobile.query('酒店预订')
-ads_top = result.ads_top
 describe "types check" do
+	result = Query::Engine::SogouMobile.query('酒店预订')
+	ads_top = result.ads_top
     it "should return Query::Result::SogouMobile" do
 	    result.class.should == Query::Result::SogouMobile
 	end
 
     it "should return Array" do
-		ads_top.class.should == Array
+			ads_top.class.should == Array
     end
 
     it "should has keys" do
-        ads_top[0].should have_key(:rank)
-        ads_top[0].has_key?(:domain)
+        ads_top[0].has_key?(:rank)
         ads_top[0].has_key?(:host)
         ads_top[0].has_key?(:href)
-        ads_top[0].has_key?(:title)
+        ads_top[0].has_key?(:text)
     end
 end
 
