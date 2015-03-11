@@ -61,8 +61,8 @@ module Query
 			  if seo_div['class']=='result'
 			  	is_vr, title = false, a.search("./text()|./em|./span")
 			  else
-			    seo_div.css('script').remove    # remove all script tags
-			  	title = seo_div.search('.//h3')[0] || a.search("./text()|./span|./em")
+			  	title = seo_div.search(".//h3/*[name()!='script' and not(script)]")
+			  	title = a.search("./text()|./span|./em") if title.empty?
 			    is_vr = true
 			  end
 					{
