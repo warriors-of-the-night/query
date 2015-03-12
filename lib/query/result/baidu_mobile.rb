@@ -76,18 +76,24 @@ module Query
           title_link = div.search('a').first
           href = title_link['href']
           href = href.include?('m.baidu.com') ? href : "http://m.baidu.com#{href}"
-          if div['srcid'] == 'map'
+          if div['srcid']=='map'
             host, is_vr = 'map.baidu.com', true
           elsif div['class']=='result'
             host = div.search(".//*[@class='site']").first
-            host = host.text if host
+            host = div.search(".//*[name()!='style' and contains(text(),'.com')]").first  if host.nil?
+            host = host.nil? ? 'm.baidu.com' : host.text.split[0]
+            is_vr = false
           elsif div['tpl'] and div['data-log']
             url = JSON.parse(div['data-log'].gsub("'",'"'))['mu']
-            host  = url=='' ? "m.baidu.com" : Addressable::URI.parse(URI.encode(url)).host
+            if url==''
+            	host = div.search(".//*[name()!='style' and contains(text(),'.com')]").first
+              host = host.nil? ? 'm.baidu.com' : host.text.split[0]
+            else
+              host = Addressable::URI.parse(URI.encode(url)).host
+            end
             is_vr = true
           end
-          host = host || "m.baidu.com"
-          # is_vr = (is_vr.nil? and !host[/baidu|nuomi/]) ? false : true     
+          #is_vr = (is_vr.nil? and !host[/baidu|nuomi/]) ? false : true     
           {   
             :is_vr => false || is_vr,
             :text  => title_link.text.gsub(/\n|\s/,'')[0..30],
