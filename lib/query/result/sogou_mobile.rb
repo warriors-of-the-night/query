@@ -42,12 +42,17 @@ module Query
 
       private
       def parse_ad(ad_div)
-        site = ad_div.search(".//span[@class='exp_tip']/preceding-sibling::span")[0] || ad_div.search(".//div[@class='bd_citeurl']/text()")[0]
-        {
-          :text => ad_div.search('h3')[0].text.gsub(/ |\n|\t/,""),
-          :href => ad_div.search('a')[0]['href'],
-          :host => site.text.strip.downcase
-        }
+      	begin
+        	site = ad_div.search(".//span[@class='exp_tip']/preceding-sibling::span")[0] || ad_div.search(".//div[@class='bd_citeurl']/text()")[0]
+        	{
+          	:text => ad_div.search('h3')[0].text.gsub(/ |\n|\t/,""),
+          	:href => ad_div.search('a')[0]['href'],
+          	:host => site.text.strip.downcase
+        	}
+        rescue Exception => e
+          warn "Error in parse_ads method : " + e.message
+          {}
+        end
       end
       
       def parse_seo_ranks(seo_div)
@@ -55,14 +60,15 @@ module Query
         a    = seo_div.search(".//a[contains(@href,'url=')]")[0]
         href = URI.decode(CGI.parse(URI(URI.encode(a['href'])).query)['url'][0])
         if href==""
-          href = seo_div.search(".//div[@class='citeurl']/text()")[0].text.gsub(/ |-/,"")
-          href = "http://#{href}"
+          href = seo_div.search(".//div[@class='citeurl']/text()")[0] || "wap.sogou.com"
+          href = "http://#{href.to_s.gsub(/ |-/,'')}"
         end
         if seo_div['class']=='result'
           is_vr, title = false, a.search("./text()|./em|./span")
         else
-          seo_div.css('script').remove    # remove all script tags
-          title = seo_div.search('.//h3')[0] || a.search("./text()|./span|./em")
+          title = seo_div.search(".//h3")[0] || a
+          title.css('script').remove
+          title = title.search("./text()|./span|./em")
           is_vr = true
         end
           {
