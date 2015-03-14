@@ -68,7 +68,6 @@ module Query
         else
           title = seo_div.search(".//h3")[0] || a
           title.css('script').remove
-          title = title.search("./text()|./span|./em")
           is_vr = true
         end
           {
