@@ -72,7 +72,7 @@ module Query
         end
           {
             :text  => title.text.gsub(/ |\n|\t/,""),
-            :href  => href,
+            :href  => a['href'],
             :host  => URI(URI.encode(href)).host,
             :is_vr => is_vr
           }
