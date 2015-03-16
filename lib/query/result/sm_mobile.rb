@@ -48,8 +48,8 @@ module Query
       def parse_ad(ad_div)
         begin
           title_link = ad_div.at_css('a') 
-          title = title_link.search("./text()|./em|./span")
-          url = ad_div.search(".//div[@class='host']/text()").text
+          title = title_link.search('./text()|./em|./span')
+          url = ad_div.search('.//div[@class="host"]/text()').text
           url = "http://#{url}" if !url[/http:/]   
            {
               :text => title.text.gsub(/\n|\s/,''),
@@ -57,21 +57,20 @@ module Query
               :host => URI(URI.encode(url.gsub(/ |\n|\t|\s/,""))).host
            }
         rescue Exception => e
-         warn "Error in parse_ad method : " + e.message
+         warn "Error in parse_ads method : " + e.message
          {}
         end
       end
 
       def parse_seo(seo_div)	
         begin
-          title_link = seo_div.search('a')[0]
+          title_link = seo_div.at('.//a[contains(@href,"http://")]')
           href = title_link['href']
           if seo_div['class']=="result card"
             is_vr = false
-            url   = seo_div.search(".//div[@class='host']/span[contains(text(),'.com')]/text()")[0] || href
+            url   = seo_div.search('.//div[@class="host"]/span/text()[matches(.,"\w+.\w+")]', XpathFunctions.new)[0] || href
           else
             is_vr, url = true, href
-            url = "m." + JSON.parse(seo_div['data-sc'])['sc_ds'] + ".com" if url.include?("javascript")
           end
           url = "http://#{url}" if !url[/http:/]   
           {   
@@ -84,6 +83,12 @@ module Query
           warn "Error in parse_seo method : " + e.message
           {}
         end
+      end
+      
+      class XpathFunctions 
+      	def matches node_set, regex
+       		node_set.find_all {|node| node.to_s[/#{regex}/] }
+      	end
       end
     end
   end
