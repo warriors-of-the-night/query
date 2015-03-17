@@ -2,6 +2,15 @@ module Query
   module Result
     class QihuMobile
       include Query::Result
+      
+      def html
+        @page.to_html
+      end
+      
+      def next_url
+       "#{@baseuri.to_s}&pn=#{@pagenumber+1}"
+      end
+      
       def seo_ranks
       	@page.css('div.g-card').map.with_index do |seo_div,index|
       		begin
@@ -32,15 +41,11 @@ module Query
           end
         end
       end
-      
-      def next_url
-       "#{@baseuri.to_s}&pn=#{@pagenumber+1}"
+     
+      def related_keywords
+        @related_keywords ||= @page.search("//div[@class='related-search-b']//a").map{|relwd| relwd.text.gsub(/ |\n|\t/,"")}
       end
       
-      def html
-        @page.to_html
-      end
-
     end
   end
 end
