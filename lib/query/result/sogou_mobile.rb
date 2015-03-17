@@ -58,23 +58,27 @@ module Query
       def parse_seo_ranks(seo_div)
         begin
         a    = seo_div.search(".//a[contains(@href,'url=')]")[0]
-        href = URI.decode(CGI.parse(URI(URI.encode(a['href'])).query)['url'][0])
-        if href==""
-          href = seo_div.search(".//div[@class='citeurl']/text()")[0] || "wap.sogou.com"
-          href = "http://#{href.to_s.gsub(/ |-/,'')}"
+        cite_url = URI.decode(CGI.parse(URI(URI.encode(a['href'])).query)['url'][0])
+        
+        if cite_url==""
+          cite_url  = seo_div.search(".//div[@class='citeurl']/text()")[0] || "wap.sogou.com"
+          cite_url  = "http://#{cite_url.to_s.gsub(/ |-/,'')}"
         end
-        if seo_div['class']=='result'
-          is_vr, title = false, a.search("./text()|./em|./span")
+        
+        if seo_div['class']=='result'       
+          is_vr, title = false, a.search("./text()|./em|./span")     
         else
-          title = seo_div.search(".//h3")[0] || a
+          title     = seo_div.search(".//h3")[0] || a
+          is_vr     = true
           title.css('script').remove
-          is_vr = true
         end
+        	url       = a['href'][/wap.sogou.com\/web/].nil? ? "http://wap.sogou.com/web/#{a['href']}" : a['href'] 
+        	
           {
-            :text  => title.text.gsub(/ |\n|\t/,""),
-            :href  => a['href'],
-            :host  => URI(URI.encode(href)).host,
-            :is_vr => is_vr
+            :text   => title.text.gsub(/ |\n|\t/,""),
+            :href   => url,
+            :host   => URI(URI.encode(cite_url)).host,
+            :is_vr  => is_vr
           }
         rescue Exception => e
           warn "Error in parse_seo method : " + e.message
